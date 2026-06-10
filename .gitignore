@@ -17,6 +17,7 @@ env/
 # Ignore generated build files
 /build/
 /dist/
+*.spec
 
 # Ignore generated output
 output/
