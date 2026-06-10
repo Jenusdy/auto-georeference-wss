@@ -19,7 +19,7 @@ def get_reader():
     return _reader
 
 
-def detect_sls(image_path):
+def detect_id(image_path):
     img = cv2.imread(image_path)
     if img is None:
         return None
@@ -46,10 +46,10 @@ def detect_sls(image_path):
     return numbers if numbers else None
 
 
-def copy_file(source_path, output_dir, idsls):
+def copy_file(source_path, output_dir, idsubsls):
     output_dir.mkdir(parents=True, exist_ok=True)
     suffix = Path(source_path).suffix
-    dest = Path(output_dir) / f"{idsls}_WSS{suffix}"
+    dest = Path(output_dir) / f"{idsubsls}_WSS{suffix}"
     shutil.copy2(source_path, dest)
     return str(dest)
 
@@ -82,13 +82,13 @@ def main():
     print(f'Ditemukan {len(image_files)} gambar')
     for img_path in sorted(image_files):
         filename = Path(img_path).name
-        idsls = detect_sls(img_path)
-        if idsls:
-            copy_file(img_path, output_dir, idsls)
-            results.append([filename, idsls, 'Berhasil', 'Berhasil melakukan rename file!'])
-            print(f'[OK] {filename} -> {idsls}')
+        idsubsls = detect_id(img_path)
+        if idsubsls:
+            copy_file(img_path, output_dir, idsubsls)
+            results.append([filename, idsubsls, 'Berhasil', 'Berhasil melakukan rename file!'])
+            print(f'[OK] {filename} -> {idsubsls}')
         else:
-            results.append([filename, '', 'Gagal', 'Tidak ada nomor SLS ditemukan!'])
+            results.append([filename, '', 'Gagal', 'Tidak ada nomor ID ditemukan!'])
             print(f'[FAIL] {filename} -> GAGAL')
 
     df = pd.DataFrame(results, columns=['Nama File', 'Nama Hasil', 'Status', 'Info'])

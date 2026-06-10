@@ -13,8 +13,8 @@ def build_index(geojson_path):
     index = {}
     for feature in data.get('features', []):
         props = feature.get('properties', {})
-        idsls = props.get('idsls')
-        if not idsls:
+        idsubsls = props.get('idsubsls')
+        if not idsubsls:
             continue
 
         coords = []
@@ -34,7 +34,7 @@ def build_index(geojson_path):
 
         xs = [c[0] for c in coords]
         ys = [c[1] for c in coords]
-        index[idsls] = {
+        index[idsubsls] = {
             'xmin': min(xs), 'xmax': max(xs),
             'ymin': min(ys), 'ymax': max(ys),
             'nmdesa': props.get('nmdesa', ''),
@@ -76,14 +76,19 @@ def main():
     print('Memuat GeoJSON...')
     index = build_index(str(geojson_path))
     if not index:
-        print('Tidak ada data SLS dalam GeoJSON')
+        print('Tidak ada data dalam GeoJSON')
         return
-    print(f'{len(index)} fitur SLS dimuat')
+    print(f'{len(index)} fitur dimuat')
 
     patterns = ['*.jpg', '*.jpeg', '*.png', '*.JPG', '*.JPEG', '*.PNG']
+    seen = set()
     image_files = []
     for pattern in patterns:
-        image_files.extend(glob(str(output_dir / '**' / pattern), recursive=True))
+        for f in glob(str(output_dir / '**' / pattern), recursive=True):
+            f_lower = f.lower()
+            if f_lower not in seen:
+                seen.add(f_lower)
+                image_files.append(f)
 
     if not image_files:
         print(f'Tidak ada gambar di folder {output_dir}')
@@ -95,15 +100,15 @@ def main():
 
     for img_path in sorted(image_files):
         img_file = Path(img_path)
-        idsls = img_file.stem.replace('_WSS', '')
-        entry = index.get(idsls)
+        idsubsls = img_file.stem.replace('_WSS', '')
+        entry = index.get(idsubsls)
         if entry is None:
-            print(f'[FAIL] {img_file.name} -> {idsls} tidak ada di GeoJSON')
+            print(f'[FAIL] {img_file.name} -> {idsubsls} tidak ada di GeoJSON')
             fail += 1
             continue
 
         if write_jgw(img_file, entry):
-            print(f'[OK] {img_file.name} -> {idsls}.jgw | {entry["nmdesa"]}, {entry["nmkec"]}')
+            print(f'[OK] {img_file.name} -> {idsubsls}.jgw | {entry["nmdesa"]}, {entry["nmkec"]}')
             ok += 1
         else:
             print(f'[FAIL] {img_file.name} -> GAGAL (baca gambar)')
