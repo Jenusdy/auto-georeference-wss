@@ -18,6 +18,9 @@ env/
 /build/
 /dist/
 
+# Ignore generated output
+output/
+
 # Ignore system-specific files
 .DS_Store
 Thumbs.db

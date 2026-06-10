@@ -1,4 +1,3 @@
-import os
 import re
 import shutil
 import argparse
@@ -7,16 +6,17 @@ from glob import glob
 
 import cv2
 import pandas as pd
-import pytesseract
+import easyocr
 
-_TESS_PATHS = [
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe",
-    r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
-]
-for p in _TESS_PATHS:
-    if os.path.exists(p):
-        pytesseract.pytesseract.tesseract_cmd = p
-        break
+_reader = None
+
+
+def get_reader():
+    global _reader
+    if _reader is None:
+        print('Memuat EasyOCR (pertama kali butuh download model)...')
+        _reader = easyocr.Reader(['en'], gpu=False)
+    return _reader
 
 
 def detect_sls(image_path):
@@ -38,8 +38,11 @@ def detect_sls(image_path):
         crop_w = round(w * 0.80)
 
     cropped = img[0:crop_h, crop_w:w - 1]
-    text = pytesseract.image_to_string(cropped, config='--psm 6 -c tessedit_char_whitelist=0123456789')
-    numbers = "".join(re.findall(r"\d+", text))
+
+    reader = get_reader()
+    results = reader.readtext(cropped, detail=1)
+    all_text = " ".join([r[1] for r in results])
+    numbers = "".join(re.findall(r"\d+", all_text))
     return numbers if numbers else None
 
 
