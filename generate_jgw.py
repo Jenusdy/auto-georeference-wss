@@ -95,7 +95,7 @@ def main():
 
     for img_path in sorted(image_files):
         img_file = Path(img_path)
-        idsls = img_file.stem
+        idsls = img_file.stem.replace('_WSS', '')
         entry = index.get(idsls)
         if entry is None:
             print(f'[FAIL] {img_file.name} -> {idsls} tidak ada di GeoJSON')

@@ -49,7 +49,7 @@ def detect_sls(image_path):
 def copy_file(source_path, output_dir, idsls):
     output_dir.mkdir(parents=True, exist_ok=True)
     suffix = Path(source_path).suffix
-    dest = Path(output_dir) / f"{idsls}{suffix}"
+    dest = Path(output_dir) / f"{idsls}_WSS{suffix}"
     shutil.copy2(source_path, dest)
     return str(dest)
 
