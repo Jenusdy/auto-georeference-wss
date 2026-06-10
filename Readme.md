@@ -1,72 +1,51 @@
-[![Latest release](https://img.shields.io/github/v/release/Jenusdy/PetaWSRename-QR?color=brightgreen&label=latest%20release)](https://github.com/JetBrains/compose-multiplatform/releases/latest)
-[![Github All Releases](https://img.shields.io/github/downloads/Jenusdy/PetaWSRename-QR/total.svg)]()
-[![Latest build](https://img.shields.io/github/v/release/Jenusdy/PetaWSRename-QR?color=orange&include_prereleases&label=latest%20build)](https://github.com/JetBrains/compose-multiplatform/releases)
-
 # PetaWSRename-QR
-PetaWSRename-QR adalah project yang digunakan untuk melakukan rename peta WS menggunakan OCR dan QR Code yang ada pada hasil layout peta
 
-## Daftar Isi
-- [Pengenalan](#pengenalan)
-- [Fitur](#fitur)
-- [Instalasi](#instalasi)
-- [Build](#build)
-- [Penggunaan](#penggunaan)
-- [Kontribusi](#kontribusi)
-- [Lisensi](#lisensi)
-
-## Pengenalan
-PetaWSRename-QR adalah aplikasi desktop yang dikembangkan menggunakan PyQT5 untuk memudahkan user menggunakan aplikasi 
-tanpa harus mengerti code. Tujuan dari aplikasi ini adalah melakukan rename peta WS menggunakan QR Code atau OCR yang ada pada hasil layout peta
+Aplikasi untuk rename peta WS menggunakan OCR (Optical Character Recognition) dan generate file world (.jgw) dari data GeoJSON.
 
 ## Fitur
-- Melakukan rename pada peta WS menggunakan OCR atau QR
-- Mendapatkan report hasil rename peta WS
-- Hasil rename sudah dalam folder terstruktur dari kabupaten hingga desa
+
+- **rename_maps.py** — Membaca nomor SLS dari gambar peta menggunakan OCR, lalu menyalin/mengganti nama file ke folder output terstruktur.
+- **generate_jgw.py** — Membuat file .jgw (world file) dari gambar hasil rename berdasarkan data koordinat di GeoJSON.
+
+## Struktur Folder
+
+```
+input/
+  01_Peta WSS/          -- Folder gambar peta (JPG)
+  02_Peta Digital/      -- Folder data GeoJSON
+    Final_SLS_*.geojson
+output/                 -- Hasil rename & JGW
+```
+
+## Persyaratan
+
+- Python 3.10+
+- Tesseract-OCR (https://github.com/tesseract-ocr/tesseract)
 
 ## Instalasi
-1. Salin repositori ke mesin lokal Anda dengan menggunakan perintah berikut:
 
-```git clone https://github.com/Jenusdy/PetaWSRename-QR.git```
+```bash
+pip install -r requirements.txt
+```
 
-2. Install package menggunakan perintah:
-
-```pip install -r packages.txt```
-
-3. Untuk package mengenai OCR dapat didownload dan diinstall di [Tesseract](https://github.com/tesseract-ocr/tesseract)
-
-## Build
-1. Install pyinstaller
-
-```pip install pyinstaller```
-
-2. Build aplikasi 
-
-```python -m PyInstaller -F main.py --onefile --windowed```
-
+Install Tesseract-OCR dan pastikan path `tesseract.exe` tersedia di system PATH atau di:
+- `C:\Program Files\Tesseract-OCR\tesseract.exe`
+- `C:\Program Files (x86)\Tesseract-OCR\tesseract.exe`
 
 ## Penggunaan
-Download aplikasi pada release page
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/QWTBopsebIE/0.jpg)](https://www.youtube.com/watch?v=QWTBopsebIE)
+### 1. Rename Peta
 
-## Kontribusi
-Kontribusi untuk PetaWSRename-QR sangatlah diperbolehkan! Jika Anda menemukan masalah atau memiliki ide perbaikan, silakan buka issue atau ajukan pull request di [GitHub repository](https://github.com/Jenusdy/PetaWSRename-QR).
+```bash
+python rename_maps.py --input "input/01_Peta WSS" --output output
+```
 
-Ketika berkontribusi, harap pastikan untuk mengikuti kode etik dan memberikan informasi detail tentang perubahan yang Anda lakukan atau laporan bug.
+### 2. Generate JGW
+
+```bash
+python generate_jgw.py --output output --geojson "input/02_Peta Digital/Final_SLS_202513674.geojson"
+```
 
 ## Lisensi
-```xml
-Copyright 2023 Jenusdy
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-```
+Copyright 2023 Jenusdy. Apache License 2.0.
