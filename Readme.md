@@ -55,10 +55,12 @@ pip install -e .
 
 Berikut adalah video panduan penggunaan aplikasi:
 
-https://github.com/Jenusdy/auto-georeference-wss/raw/master/docs/tutorial.mp4
+<video src="https://github.com/Jenusdy/auto-georeference-wss/raw/master/docs/tutorial.mp4" controls width="100%">
+  Browser Anda tidak mendukung pemutaran video tag HTML5. Anda dapat melihat berkas video di <a href="docs/tutorial.mp4">docs/tutorial.mp4</a>.
+</video>
 
 > [!NOTE]
-> Anda juga dapat membuka langsung berkas video di repository: [`docs/tutorial.mp4`](docs/tutorial.mp4).
+> Jika pemutar video di atas tidak tampil di aplikasi tertentu, Anda dapat membuka langsung berkas video di repository: [`docs/tutorial.mp4`](docs/tutorial.mp4).
 
 ## Cara Penggunaan (Portable Release .exe)
 
