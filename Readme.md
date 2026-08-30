@@ -46,7 +46,15 @@ Atau install manual:
 pip install opencv-python numpy easyocr pandas PyQt5
 ```
 
-## Penggunaan
+## Cara Penggunaan (Portable Release .exe)
+
+1. **Download** `wss-tool-v1.0.3-windows-x64.zip` dari halaman Releases.
+2. **Extract** file zip tersebut ke folder pilihan Anda.
+3. **Run** file `wss-tool-gui.exe`.
+4. **Pilih** poligon peta SLS (GeoJSON), Folder peta WSS (gambar JPG/PNG), dan Folder lokasi output peta hasil rename & georeferensi.
+5. Klik tombol **Running** / **Jalankan Process**.
+
+## Penggunaan (Source Code)
 
 ### CLI
 
