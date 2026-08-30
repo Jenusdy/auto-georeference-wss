@@ -1,13 +1,13 @@
 # WSS Tool — Rename & Georeferensi Otomatis
 
-Aplikasi untuk auto rename peta WSS menggunakan EasyOCR dan generate file world (.jgw) dari data GeoJSON.
+Aplikasi untuk auto rename peta WSS menggunakan RapidOCR (ONNXRuntime) dan generate file world (.jgw) dari data GeoJSON Poligon SLS.
 
 ## Fitur
 
-- **Rename (OCR)** — Deteksi nomor SLS dari gambar peta menggunakan EasyOCR, salin + rename ke folder output.
-- **Georeferensi** — Deteksi 4 titik sudut peta, hitung parameter affine, dan generate file .jgw / .pgw.
-- **GUI** — Antarmuka PyQt5 untuk menjalankan kedua langkah secara berurutan.
-- **CLI** — Subcommand `rename` dan `georef` untuk penggunaan via terminal.
+- **Rename (OCR)** — Deteksi nomor Sub SLS (`idsubsls`) dari gambar peta menggunakan RapidOCR (`rapidocr_onnxruntime`), lalu salin + rename dengan format `[idsubsls]_WSS.[ext]` ke folder output.
+- **Georeferensi** — Deteksi 4 titik sudut peta menggunakan contour detection OpenCV (multi-epsilon approximation), hitung parameter transformasi affine dari koordinat GeoJSON, dan generate file world (`.jgw` / `.pgw`).
+- **GUI** — Antarmuka PyQt5 interaktif dengan indikator progress dan validasi input.
+- **CLI** — Subcommand `rename` dan `georef` untuk penggunaan via terminal / otomatisasi skrip.
 
 ## Struktur Folder
 
@@ -23,8 +23,8 @@ output/                     -- Hasil rename & JGW (dibuat otomatis)
 wss_tool/                   -- Paket utama
   __init__.py
   _io.py                    -- Utilitas pencarian file gambar
-  geo.py                    -- Georeferensi (deteksi fitur, hitung parameter, write JGW)
-  ocr.py                    -- OCR rename (deteksi ID, copy file)
+  geo.py                    -- Georeferensi (deteksi kontur 4 titik, hitung affine, write JGW)
+  ocr.py                    -- OCR rename (RapidOCR ONNXRuntime, regex idsubsls, copy file)
   cli.py                    -- CLI entry point (subcommand: rename, georef)
   gui.py                    -- GUI PyQt5
 ```
@@ -32,7 +32,12 @@ wss_tool/                   -- Paket utama
 ## Persyaratan
 
 - Python 3.10+
-- (Opsional) GPU CUDA untuk EasyOCR — otomatis dipakai jika ada
+- Dependencies (lihat `requirements.txt`):
+  - `rapidocr-onnxruntime`
+  - `opencv-python`
+  - `numpy`
+  - `pandas`
+  - `PyQt5`
 
 ## Instalasi
 
@@ -40,10 +45,10 @@ wss_tool/                   -- Paket utama
 pip install -r requirements.txt
 ```
 
-Atau install manual:
+Atau install paket dalam mode editable:
 
 ```bash
-pip install opencv-python numpy easyocr pandas PyQt5
+pip install -e .
 ```
 
 ## Cara Penggunaan (Portable Release .exe)
@@ -51,8 +56,8 @@ pip install opencv-python numpy easyocr pandas PyQt5
 1. **Download** `wss-tool-v1.0.3-windows-x64.zip` dari halaman Releases.
 2. **Extract** file zip tersebut ke folder pilihan Anda.
 3. **Run** file `wss-tool-gui.exe`.
-4. **Pilih** poligon peta SLS (GeoJSON), Folder peta WSS (gambar JPG/PNG), dan Folder lokasi output peta hasil rename & georeferensi.
-5. Klik tombol **Running** / **Jalankan Process**.
+4. **Pilih** Poligon Peta SLS (GeoJSON), Folder Peta WSS (gambar JPG/PNG), dan Folder Lokasi Output.
+5. Klik tombol **Running**.
 
 ## Penggunaan (Source Code)
 
@@ -85,15 +90,16 @@ Atau:
 python -m wss_tool.gui
 ```
 
-### Build .exe (standalone)
+### Build .exe (Standalone Windows Release)
 
 ```bash
 python build_exe.py
 ```
 
-Hasil: `dist/wss-tool.exe` (CLI) dan `dist/wss-tool-gui.exe` (GUI).
+Hasil build berada di `dist/wss-tool/` yang berisi `wss-tool-gui.exe` (GUI) dan `wss-tool.exe` (CLI) serta zip archive `dist/wss-tool-v1.0.3-windows-x64.zip`.
 
 ## Catatan
 
-- OCR membutuhkan PyTorch (+ ~2GB disk). Jika gagal load, GUI akan menampilkan pesan dan tetap menjalankan georeferensi.
-- Untuk performa OCR terbaik, gunakan GPU dengan CUDA.
+- OCR menggunakan engine lightweight RapidOCR ONNXRuntime yang cepat tanpa perlu PyTorch/CUDA heavy installation.
+- Untuk hasil georeferensi yang akurat, pastikan GeoJSON SLS berisi atribut ID SLS yang sesuai dengan teks yang terdeteksi di gambar peta.
+
