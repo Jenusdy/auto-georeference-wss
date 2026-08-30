@@ -51,13 +51,25 @@ Atau install paket dalam mode editable:
 pip install -e .
 ```
 
+## Tutorial Video
+
+Berikut adalah video panduan penggunaan aplikasi:
+
+https://github.com/user-attachments/assets/tutorial.mp4
+
+> [!NOTE]
+> Jika video di atas tidak dapat diputar langsung di GitHub/Markdown viewer, Anda dapat mengakses berkas video secara lokal di [`docs/tutorial.mp4`](docs/tutorial.mp4).
+
 ## Cara Penggunaan (Portable Release .exe)
 
 1. **Download** `wss-tool-v1.0.3-windows-x64.zip` dari halaman Releases.
 2. **Extract** file zip tersebut ke folder pilihan Anda.
 3. **Run** file `wss-tool-gui.exe`.
-4. **Pilih** Poligon Peta SLS (GeoJSON), Folder Peta WSS (gambar JPG/PNG), dan Folder Lokasi Output.
-5. Klik tombol **Running**.
+4. **Pilih Input & Output**:
+   - **Poligon Peta SLS (GeoJSON)**: Pilih file GeoJSON yang berisi data spasial poligon SLS (contoh: `Final_SLS_*.geojson`).
+   - **Folder Peta WSS**: Pilih folder yang berisi file gambar peta asli (`.jpg`, `.jpeg`, `.png`).
+   - **Folder Lokasi Output**: Pilih folder tempat menyimpan hasil rename peta & file world (`.jgw` / `.pgw`).
+5. **Jalankan Proses**: Klik tombol **Running** untuk memulai proses OCR rename dan pembuatan file georeferensi otomatis. Indikator progress akan menampilkan status pengerjaan.
 
 ## Penggunaan (Source Code)
 
