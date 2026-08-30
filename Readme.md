@@ -55,10 +55,10 @@ pip install -e .
 
 Berikut adalah video panduan penggunaan aplikasi:
 
-https://github.com/user-attachments/assets/tutorial.mp4
+https://github.com/Jenusdy/auto-georeference-wss/raw/master/docs/tutorial.mp4
 
 > [!NOTE]
-> Jika video di atas tidak dapat diputar langsung di GitHub/Markdown viewer, Anda dapat mengakses berkas video secara lokal di [`docs/tutorial.mp4`](docs/tutorial.mp4).
+> Anda juga dapat membuka langsung berkas video di repository: [`docs/tutorial.mp4`](docs/tutorial.mp4).
 
 ## Cara Penggunaan (Portable Release .exe)
 
