@@ -1,5 +1,5 @@
 opencv-python>=4.0.0
 numpy>=1.20.0
-easyocr>=1.7
+rapidocr-onnxruntime>=1.2.0
 pandas>=2.0
 PyQt5>=5.15.0

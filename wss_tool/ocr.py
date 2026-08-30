@@ -1,22 +1,39 @@
 from __future__ import annotations
 
+import os
 import re
 import shutil
+import sys
 from pathlib import Path
 
 import cv2
 
-_reader = None
+if hasattr(sys, '_MEIPASS'):
+    _ort_capi = Path(sys._MEIPASS) / 'onnxruntime' / 'capi'
+    if _ort_capi.is_dir() and hasattr(os, 'add_dll_directory'):
+        try:
+            os.add_dll_directory(str(_ort_capi))
+        except Exception:
+            pass
+else:
+    try:
+        import onnxruntime
+        _ort_capi = Path(onnxruntime.__file__).parent / 'capi'
+        if _ort_capi.is_dir() and hasattr(os, 'add_dll_directory'):
+            os.add_dll_directory(str(_ort_capi))
+    except Exception:
+        pass
+
+from rapidocr_onnxruntime import RapidOCR
+
+_engine = None
 
 
-def _get_reader():
-    global _reader
-    if _reader is None:
-        import warnings
-        warnings.filterwarnings('ignore', message='.*pin_memory.*')
-        import easyocr
-        _reader = easyocr.Reader(['en'], gpu=False)
-    return _reader
+def _get_engine():
+    global _engine
+    if _engine is None:
+        _engine = RapidOCR()
+    return _engine
 
 
 def detect_id(image_path: str | Path) -> str | None:
@@ -38,11 +55,14 @@ def detect_id(image_path: str | Path) -> str | None:
         crop_w = round(w * 0.80)
 
     cropped = img[0:crop_h, crop_w:w - 1]
-    reader = _get_reader()
-    results = reader.readtext(cropped, detail=1)
+    engine = _get_engine()
+    results, _ = engine(cropped)
+    if not results:
+        return None
     all_text = ' '.join(r[1] for r in results)
     numbers = ''.join(re.findall(r'\d+', all_text))
     return numbers if numbers else None
+
 
 
 def rename_and_copy(source_path: Path, output_dir: Path, idsubsls: str) -> Path:
@@ -71,3 +91,4 @@ def process_all(input_dir: str | Path, output_dir: str | Path):
             yield source, {'status': 'ok', 'idsubsls': idsubsls}
         else:
             yield source, {'status': 'fail', 'reason': 'Tidak ada nomor ID ditemukan'}
+

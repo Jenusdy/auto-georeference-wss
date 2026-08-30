@@ -6,21 +6,31 @@ import sys
 from pathlib import Path
 
 
-def _preload_torch():
-    """Pre-load torch before PyQt5 to avoid DLL conflict on Windows."""
-    torch_lib = (
-        Path(sys.prefix)
-        / 'Lib' / 'site-packages' / 'torch' / 'lib'
-    )
-    if torch_lib.is_dir():
-        os.add_dll_directory(str(torch_lib))
+def _preload_onnxruntime():
+    """Pre-load onnxruntime before PyQt5 to avoid DLL initialization conflict on Windows."""
+    if hasattr(sys, '_MEIPASS'):
+        _ort_capi = Path(sys._MEIPASS) / 'onnxruntime' / 'capi'
+        if _ort_capi.is_dir() and hasattr(os, 'add_dll_directory'):
+            try:
+                os.add_dll_directory(str(_ort_capi))
+            except Exception:
+                pass
+    else:
+        try:
+            import onnxruntime
+            _ort_capi = Path(onnxruntime.__file__).parent / 'capi'
+            if _ort_capi.is_dir() and hasattr(os, 'add_dll_directory'):
+                os.add_dll_directory(str(_ort_capi))
+        except Exception:
+            pass
     try:
-        import torch  # noqa: F401
+        import onnxruntime  # noqa: F401
     except Exception:
         pass
 
 
-_preload_torch()
+_preload_onnxruntime()
+
 
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5.QtWidgets import (
